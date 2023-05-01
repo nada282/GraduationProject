@@ -33,7 +33,7 @@
         />
     <item
         android:id="@+id/about"
-        android:icon="@drawable/error"
+        android:icon="@drawable/error1"
         android:title="About Us"
         />
 

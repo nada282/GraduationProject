@@ -1,53 +1,67 @@
 package com.example.myapplication;
 
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
+import android.view.View;
 
 public class Registration extends AppCompatActivity {
-
-    private TabLayout tabLayout;
-    ViewPager viewPager;
-    FloatingActionButton facebook,google,twitter;
-    float v=0;
+    private static FragmentManager fragmentManager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
+        fragmentManager = getSupportFragmentManager();
 
-        tabLayout=findViewById(R.id.tab_layout);
-        viewPager= findViewById(R.id.view_pager);
-        facebook= findViewById(R.id.facebook);
-        google= findViewById(R.id.google);
-        twitter= findViewById(R.id.twitter);
+        // If savedinstnacestate is null then replace login fragment
+        if (savedInstanceState == null) {
+            fragmentManager
+                    .beginTransaction()
+                    .replace(R.id.frameContainer, new Login_Fragment(),
+                            Utils.Login_Fragment).commit();
+        }
 
-        tabLayout.addTab(tabLayout.newTab().setText("Login"));
-        tabLayout.addTab(tabLayout.newTab().setText("Signup"));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        // On close icon click finish activity
+        findViewById(R.id.close_activity).setOnClickListener(
+                new View.OnClickListener() {
 
-        final LoginAdapter adapter = new LoginAdapter(getSupportFragmentManager(), this,tabLayout.getTabCount());
-        viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+                    @Override
+                    public void onClick(View arg0) {
+                        finish();
 
-        facebook.setTranslationY(300);
-        google.setTranslationY(300);
-        twitter.setTranslationY(300);
-        tabLayout.setTranslationY(300);
+                    }
+                });
 
-        facebook.setAlpha(v);
-        google.setAlpha(v);
-        twitter.setAlpha(v);
-        tabLayout.setAlpha(v);
+    }
 
-        facebook.animate().translationY(0).alpha(1).setDuration(1000).setStartDelay(400).start();
-        google.animate().translationY(0).alpha(1).setDuration(1000).setStartDelay(600).start();
-        twitter.animate().translationY(0).alpha(1).setDuration(1000).setStartDelay(800).start();
-        tabLayout.animate().translationY(0).alpha(1).setDuration(1000).setStartDelay(100).start();
+    // Replace Login Fragment with animation
+    protected void replaceLoginFragment() {
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.left_enter, R.anim.right_out)
+                .replace(R.id.frameContainer, new Login_Fragment(),
+                        Utils.Login_Fragment).commit();
+    }
 
+    @Override
+    public void onBackPressed() {
+
+        // Find the tag of signup and forgot password fragment
+        Fragment SignUp_Fragment = fragmentManager
+                .findFragmentByTag(Utils.SignUp_Fragment);
+        Fragment ForgotPassword_Fragment = fragmentManager
+                .findFragmentByTag(Utils.ForgotPassword_Fragment);
+
+        // Check if both are null or not
+        // If both are not null then replace login fragment else do backpressed
+        // task
+
+        if (SignUp_Fragment != null)
+            replaceLoginFragment();
+        else if (ForgotPassword_Fragment != null)
+            replaceLoginFragment();
+        else
+            super.onBackPressed();
     }
 }

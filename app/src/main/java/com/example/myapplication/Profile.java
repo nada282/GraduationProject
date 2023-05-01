@@ -21,7 +21,7 @@ private Button btnlogout;
     public void btnlogout(View view) {
 
         Intent intent = new Intent(Profile.this,
-                Registration.class);
+               Registration.class);
         startActivity(intent);
     }
 }

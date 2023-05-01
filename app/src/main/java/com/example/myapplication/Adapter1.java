@@ -1,67 +1,76 @@
 package com.example.myapplication;
 
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.cardview.widget.CardView;
-import androidx.core.content.ContextCompat;
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 public class Adapter1 extends RecyclerView.Adapter<Adapter1.ViewHolder>{
 
 
-    public Adapter1(String[] captions, int[] imageIds) {
-        this.captions = captions;
-        this.imageIds = imageIds;
+    private List<Places> novelsModels;
+    private RecycleViewOnItemClick recycleViewOnItemClick;
+
+    public Adapter1(List<Places> novelsModels, RecycleViewOnItemClick recycleViewOnItemClick) {
+        this.novelsModels = novelsModels;
+        this.recycleViewOnItemClick = recycleViewOnItemClick;
     }
 
-    private String[] captions;
-    private int[] imageIds;
-
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.homecard_view, parent, false));
+    }
 
     @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        CardView v = (CardView) LayoutInflater.from(parent.getContext()).inflate(R.layout.place_view,
-                parent,
-                false);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        return new ViewHolder(v);
-        }
+        holder.text.setText((CharSequence) novelsModels.get(position).getName());
 
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            CardView cardView = holder.cardView;
-            ImageView imageView = (ImageView) cardView.findViewById(R.id.image);
-            Drawable dr = ContextCompat.getDrawable(cardView.getContext(), imageIds[position]);
-            imageView.setImageDrawable(dr);
-            TextView txt = (TextView)cardView.findViewById(R.id.txtName);
-            txt.setText(captions[position]);
-            cardView.setOnClickListener( new View.OnClickListener(){
+        holder.image.setImageResource(novelsModels.get(position).getImageID());
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return novelsModels.size();
+    }
+
+    public void setOnItemClickListener(PlacesA placesA) {
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+
+        private TextView text;
+        private ImageView image;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+
+            text = itemView.findViewById(R.id.txtName);
+           image = itemView.findViewById(R.id.image);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v){
-                    //
+                public void onClick(View view) {
+                    recycleViewOnItemClick.onItemClick(getAdapterPosition());
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    recycleViewOnItemClick.onLongItemClick(getAdapterPosition());
+                    return true;
                 }
             });
 
         }
-
-        @Override
-        public int getItemCount() {
-            return  captions.length;
-        }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder{
-        private CardView cardView;
-        public ViewHolder(CardView cardView){
-            super(cardView);
-            this.cardView = cardView;
-        }
-
     }
-    }
-
-
+}

@@ -1,24 +1,50 @@
 package com.example.myapplication;
 
-public class Places {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Places implements Parcelable {
     private String name;
     private int imageID;
 
-    public static final Places[] place = {
-            new Places("DryClean", R.drawable.dry),
-            new Places("Dorms(سكنات)", R.drawable.dorms),
-            new Places("resturant", R.drawable.resturant),
-            new Places("beaytyCenter", R.drawable.salon),
-            new Places("SuperMarket", R.drawable.market),
-
-    };
-    private Places(String name, int imageID){
+    public Places(String name, int imageID) {
         this.name = name;
         this.imageID = imageID;
     }
 
+    protected Places(Parcel in) {
+        name = in.readString();
+        imageID = in.readInt();
+    }
 
+    public static final Creator<Places> CREATOR = new Creator<Places>() {
+        @Override
+        public Places createFromParcel(Parcel in) {
+            return new Places(in);
+        }
 
-    public String getName(){return name;}
-    public int getImageID(){return imageID;}
+        @Override
+        public Places[] newArray(int size) {
+            return new Places[size];
+        }
+    };
+
+    public String getName() {
+        return name;
+    }
+
+    public int getImageID() {
+        return imageID;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeInt(imageID);
+    }
 }
