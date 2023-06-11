@@ -183,7 +183,6 @@ public class Login_Fragment extends Fragment implements OnClickListener {
 
         // Check patter for email id
         Pattern p = Pattern.compile(Utils.regEx);
-
         Matcher m = p.matcher(getEmailId);
 
         // Check for both field is empty or not
@@ -201,20 +200,20 @@ public class Login_Fragment extends Fragment implements OnClickListener {
         }
             // Else do login and do your stuff
         else
-            mAuth.createUserWithEmailAndPassword(getEmailId, getPassword)
+            mAuth.signInWithEmailAndPassword(getEmailId, getPassword)
                     .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
-                                // Sign in success, update UI with the signed-in user's information
-                                Toast.makeText(getActivity(), "Successful**", Toast.LENGTH_SHORT)
-                                        .show();
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                Toast.makeText(getActivity(), "Login successful.", Toast.LENGTH_SHORT).show();
+
                                 Intent intent = new Intent(getActivity(),MainActivity.class);
                                 startActivity(intent);
 
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Toast.makeText(getActivity(), "Failed,Do Login.", Toast.LENGTH_SHORT)
+                                Toast.makeText(getActivity(), "Login failed. Please check your credentials.", Toast.LENGTH_SHORT)
                                         .show();
                             }
                         }
